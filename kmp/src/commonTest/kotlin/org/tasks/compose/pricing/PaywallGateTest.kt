@@ -99,6 +99,19 @@ class PaywallGateTest {
     }
 
     @Test
+    fun personalWindowsBuildMakesOnlyCalDavFree() {
+        val config = PlatformConfiguration(
+            billingProvider = BillingProvider.STRIPE,
+            thirdPartySyncRequiresPro = true,
+            selfHostedCaldavRequiresPro = false,
+        )
+        assertFalse(unlocksFeature(Platform.CALDAV.name, config))
+        listOf(Platform.ETEBASE, Platform.DAVX5, Platform.GOOGLE_TASKS, Platform.MICROSOFT).forEach {
+            assertTrue(unlocksFeature(it.name, config), it.name)
+        }
+    }
+
+    @Test
     fun thirdPartySyncOnlyUnlocksAFeatureWhenItRequiresPro() {
         val android = PlatformConfiguration(billingProvider = BillingProvider.GOOGLE_PLAY, thirdPartySyncRequiresPro = false)
         assertTrue(unlocksFeature(Platform.DAVX5.name, android))

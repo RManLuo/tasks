@@ -103,9 +103,9 @@ class CaldavSynchronizer(
     private val accountDataRepository: TasksAccountDataRepository,
     private val tagMetadataSync: TagMetadataSync,
 ) {
-    suspend fun sync(account: CaldavAccount, hasPro: Boolean) {
+    suspend fun sync(account: CaldavAccount, hasPro: Boolean, selfHostedCaldavRequiresPro: Boolean = true) {
         Logger.d(TAG) { "Synchronizing $account" }
-        if (!hasPro && !account.isTasksOrg) {
+        if (!hasPro && !account.isTasksOrg && (!account.isCaldavAccount || selfHostedCaldavRequiresPro)) {
             setError(account, getString(Res.string.subscription_required))
             return
         }

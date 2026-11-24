@@ -16,7 +16,7 @@ enum class Platform {
 }
 
 fun Platform.requiresPro(configuration: PlatformConfiguration): Boolean = when (this) {
-    Platform.CALDAV,
+    Platform.CALDAV -> configuration.selfHostedCaldavRequiresPro
     Platform.ETEBASE,
     Platform.DAVX5 -> true
     Platform.GOOGLE_TASKS,

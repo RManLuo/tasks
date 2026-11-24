@@ -19,6 +19,7 @@ import org.koin.core.module.dsl.singleOf
 import org.koin.core.module.dsl.viewModel
 import org.koin.core.module.dsl.viewModelOf
 import org.koin.dsl.module
+import org.tasks.PlatformConfiguration
 import org.tasks.TaskEditDestination
 import org.tasks.analytics.Reporting
 import org.tasks.audio.SoundPlayer
@@ -128,7 +129,11 @@ val commonModule = module {
             val caldavSynchronizer = get<CaldavSynchronizer>()
             val etebaseSynchronizer = get<EtebaseSynchronizer>()
             pass.accounts(TYPE_CALDAV, TYPE_TASKS).forEach { account ->
-                caldavSynchronizer.sync(account, hasPro = pass.hasPro)
+                caldavSynchronizer.sync(
+                    account,
+                    hasPro = pass.hasPro,
+                    selfHostedCaldavRequiresPro = get<PlatformConfiguration>().selfHostedCaldavRequiresPro,
+                )
             }
             pass.accounts(TYPE_ETEBASE).forEach { account ->
                 etebaseSynchronizer.sync(account, hasPro = pass.hasPro)

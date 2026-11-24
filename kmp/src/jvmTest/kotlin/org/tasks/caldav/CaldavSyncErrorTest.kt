@@ -60,6 +60,20 @@ class CaldavSyncErrorTest : DatabaseTest() {
     fun tearDown() = server.shutdown()
 
     @Test
+    fun `personal self-host sync reaches the server without a subscription`() = runBlocking {
+        server.enqueue(MockResponse().setResponseCode(405))
+        synchronizer.sync(account, hasPro = false, selfHostedCaldavRequiresPro = false)
+        assertEquals(1, server.requestCount)
+        assertEquals("HTTP 405 - Method Not Allowed", caldavDao.getAccountByUuid("account")!!.error)
+    }
+
+    @Test
+    fun `default policy still blocks unsubscribed self-host sync before networking`() = runBlocking {
+        synchronizer.sync(account, hasPro = false)
+        assertEquals(0, server.requestCount)
+    }
+
+    @Test
     fun `a propfind the server refuses is shown but not reported`() = runBlocking {
         server.enqueue(MockResponse().setResponseCode(405))
 

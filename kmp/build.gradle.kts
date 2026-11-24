@@ -93,6 +93,7 @@ kotlin {
         }
         val jvmTest by getting {
             dependencies {
+                runtimeOnly(compose.desktop.currentOs)
                 implementation(libs.junit)
                 implementation(libs.mockito.kotlin)
                 implementation(libs.androidx.room3)

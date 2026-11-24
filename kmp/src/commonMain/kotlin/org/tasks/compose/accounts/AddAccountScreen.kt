@@ -238,6 +238,7 @@ fun AddAccountScreen(
                                         description = stringResource(Res.string.google_tasks_selection_description),
                                         onClick = { signIn(Platform.GOOGLE_TASKS) },
                                     )
+                                    Platform.CALDAV -> CaldavAccountRow { signIn(Platform.CALDAV) }
                                     else -> {}
                                 }
                             }
@@ -288,13 +289,7 @@ fun AddAccountScreen(
                                         description = stringResource(Res.string.davx5_selection_description),
                                         onClick = { openUrl(Platform.DAVX5) },
                                     )
-                                    Platform.CALDAV -> AccountTypeRow(
-                                        title = stringResource(Res.string.caldav),
-                                        icon = Res.drawable.ic_webdav_logo,
-                                        tint = MaterialTheme.colorScheme.onSurface.copy(alpha = .8f),
-                                        description = stringResource(Res.string.caldav_selection_description),
-                                        onClick = { signIn(Platform.CALDAV) },
-                                    )
+                                    Platform.CALDAV -> CaldavAccountRow { signIn(Platform.CALDAV) }
                                     Platform.ETEBASE -> AccountTypeRow(
                                         title = stringResource(Res.string.etesync),
                                         icon = Res.drawable.ic_etesync,
@@ -313,6 +308,17 @@ fun AddAccountScreen(
             }
         }
     }
+}
+
+@Composable
+private fun CaldavAccountRow(onClick: () -> Unit) {
+    AccountTypeRow(
+        title = stringResource(Res.string.caldav),
+        icon = Res.drawable.ic_webdav_logo,
+        tint = MaterialTheme.colorScheme.onSurface.copy(alpha = .8f),
+        description = stringResource(Res.string.caldav_selection_description),
+        onClick = onClick,
+    )
 }
 
 @Composable
