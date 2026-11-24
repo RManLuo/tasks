@@ -79,7 +79,8 @@ import org.tasks.sync.microsoft.MicrosoftSynchronizer
 import java.io.File
 
 internal val appName: String =
-    if (JvmBuildConfig.DEBUG) "Tasks.org.debug" else "Tasks.org"
+    if (platform() == Platform.WINDOWS) "Tasks.org.Selfhost"
+    else if (JvmBuildConfig.DEBUG) "Tasks.org.debug" else "Tasks.org"
 
 internal enum class Platform { MAC, WINDOWS, LINUX }
 
@@ -135,7 +136,7 @@ private fun resolveDataDir(): File {
     overrideDir?.let { return it }
     val home = System.getProperty("user.home")
     val legacyDir = File(home, ".tasks.org")
-    if (legacyDir.exists()) return legacyDir
+    if (platform() != Platform.WINDOWS && legacyDir.exists()) return legacyDir
     val dir = when (platform()) {
         Platform.MAC -> File(home, "Library/Application Support/$appName")
         Platform.WINDOWS ->
@@ -337,7 +338,12 @@ actual fun platformModule(): Module = module {
     }
     single {
         val dataStoreFile = File(dataDir, dataStoreFileName)
-        TasksPreferences(createDataStore { dataStoreFile.absolutePath })
+        val store = if (platform() == Platform.WINDOWS) {
+            createWindowsPreferenceStore(dataStoreFile)
+        } else {
+            createDataStore { dataStoreFile.absolutePath }
+        }
+        TasksPreferences(store)
     }
     factory { Upgrader(get(), CommonUpgrades.all(get())) }
     factory {
