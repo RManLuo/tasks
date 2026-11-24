@@ -18,6 +18,7 @@ class SyncRunner(
     private val scope: CoroutineScope,
     private val caldavDao: CaldavDao,
     private val subscriptionProvider: () -> SubscriptionProvider,
+    private val subscriptionFreeClient: Boolean = false,
     private val pass: suspend (SyncPass) -> Unit,
 ) {
     class SyncPass(
@@ -54,10 +55,10 @@ class SyncRunner(
         val subscriptionProvider = subscriptionProvider()
         val accounts = caldavDao.getAccounts()
         val hasTasksOrg = accounts.any { it.isTasksOrg }
-        if (!hasTasksOrg && !subscriptionProvider.awaitVerification()) {
+        if (!subscriptionFreeClient && !hasTasksOrg && !subscriptionProvider.awaitVerification()) {
             Logger.e(TAG) { "Could not confirm subscription, syncing without pro" }
         }
-        val hasPro = hasTasksOrg || subscriptionProvider.subscription.first() != null
+        val hasPro = subscriptionFreeClient || hasTasksOrg || subscriptionProvider.subscription.first() != null
         Logger.d(TAG) { "sync source=$source accounts=${accounts.size} pro=$hasPro" }
         pass(
             SyncPass(

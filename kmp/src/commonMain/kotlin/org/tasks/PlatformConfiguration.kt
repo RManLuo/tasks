@@ -8,7 +8,7 @@ data class PlatformConfiguration(
     // Sync providers
     val supportsTasksOrg: Boolean = true,
     val supportsCaldav: Boolean = false,
-    val selfHostedCaldavRequiresPro: Boolean = true,
+    val subscriptionFreeClient: Boolean = false,
     val supportsGoogleTasks: Boolean = false,
     val supportsMicrosoft: Boolean = false,
     val thirdPartySyncRequiresPro: Boolean = false,

@@ -99,15 +99,14 @@ class PaywallGateTest {
     }
 
     @Test
-    fun personalWindowsBuildMakesOnlyCalDavFree() {
+    fun windowsSelfHostDoesNotGateThirdPartyAccounts() {
         val config = PlatformConfiguration(
             billingProvider = BillingProvider.STRIPE,
             thirdPartySyncRequiresPro = true,
-            selfHostedCaldavRequiresPro = false,
+            subscriptionFreeClient = true,
         )
-        assertFalse(unlocksFeature(Platform.CALDAV.name, config))
-        listOf(Platform.ETEBASE, Platform.DAVX5, Platform.GOOGLE_TASKS, Platform.MICROSOFT).forEach {
-            assertTrue(unlocksFeature(it.name, config), it.name)
+        Platform.entries.forEach {
+            assertFalse(unlocksFeature(it.name, config), it.name)
         }
     }
 

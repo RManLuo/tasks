@@ -380,6 +380,7 @@ val coreModule: Module = module {
         }
     }
     single<org.tasks.billing.PurchaseState> {
+        val subscriptionFreeClient = get<org.tasks.PlatformConfiguration>().subscriptionFreeClient
         val caldavDao = get<org.tasks.data.dao.CaldavDao>()
         val subscriptionProvider = get<org.tasks.billing.SubscriptionProvider>()
         val _hasTasksAccount = MutableStateFlow(false)
@@ -400,6 +401,8 @@ val coreModule: Module = module {
         object : org.tasks.billing.PurchaseState {
             override val hasTasksAccount: Boolean get() = _hasTasksAccount.value
             override val hasPro: Boolean get() = hasTasksAccount || _hasSubscription.value
+            override val canUseCustomIcons: Boolean get() = subscriptionFreeClient || hasPro
+            override fun purchasedThemes(): Boolean = subscriptionFreeClient || hasPro
             override val hasTasksSubscription: Boolean
                 get() = _hasTasksSubscription.value || hasTasksAccount
         }

@@ -125,15 +125,11 @@ val commonModule = module {
     single<BackgroundWork> {
         val scope = get<CoroutineScope>()
         val refreshScheduler = get<RefreshScheduler>()
-        val runner = SyncRunner(scope, get(), { get() }) { pass ->
+        val runner = SyncRunner(scope, get(), { get() }, subscriptionFreeClient = get<PlatformConfiguration>().subscriptionFreeClient) { pass ->
             val caldavSynchronizer = get<CaldavSynchronizer>()
             val etebaseSynchronizer = get<EtebaseSynchronizer>()
             pass.accounts(TYPE_CALDAV, TYPE_TASKS).forEach { account ->
-                caldavSynchronizer.sync(
-                    account,
-                    hasPro = pass.hasPro,
-                    selfHostedCaldavRequiresPro = get<PlatformConfiguration>().selfHostedCaldavRequiresPro,
-                )
+                caldavSynchronizer.sync(account, hasPro = pass.hasPro)
             }
             pass.accounts(TYPE_ETEBASE).forEach { account ->
                 etebaseSynchronizer.sync(account, hasPro = pass.hasPro)

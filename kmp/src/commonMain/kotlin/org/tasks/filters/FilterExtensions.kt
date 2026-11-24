@@ -5,7 +5,7 @@ import org.tasks.themes.TasksIcons
 import org.tasks.compose.components.iconExists
 
 fun Filter.getIcon(purchaseState: PurchaseState): String? {
-    if (purchaseState.hasPro) {
+    if (purchaseState.canUseCustomIcons) {
         icon?.takeIf(::iconExists)?.let { return it }
     }
     return when (this) {

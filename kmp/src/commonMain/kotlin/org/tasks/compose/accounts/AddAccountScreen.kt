@@ -239,6 +239,12 @@ fun AddAccountScreen(
                                         onClick = { signIn(Platform.GOOGLE_TASKS) },
                                     )
                                     Platform.CALDAV -> CaldavAccountRow { signIn(Platform.CALDAV) }
+                                    Platform.ETEBASE -> AccountTypeRow(
+                                        title = stringResource(Res.string.etesync),
+                                        icon = Res.drawable.ic_etesync,
+                                        description = stringResource(Res.string.etesync_selection_description),
+                                        onClick = { signIn(Platform.ETEBASE) },
+                                    )
                                     else -> {}
                                 }
                             }

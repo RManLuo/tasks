@@ -182,7 +182,7 @@ actual fun platformModule(): Module = module {
             supportsPlayLinkRestore = true,
             thirdPartySyncRequiresPro = true,
             supportsCaldav = true,
-            selfHostedCaldavRequiresPro = platform() != Platform.WINDOWS,
+            subscriptionFreeClient = platform() == Platform.WINDOWS,
             supportsEteSync = true,
             supportsGoogleTasks = true,
             supportsMicrosoft = true,
