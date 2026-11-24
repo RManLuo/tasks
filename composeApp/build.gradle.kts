@@ -206,7 +206,16 @@ kotlin.sourceSets.named("desktopMain") {
     sqliteNatives.orNull?.let { resources.srcDir(it) }
 }
 
-if (providers.gradleProperty("release").isPresent) {
+// The official distribution targets every desktop. Our portable x64 build uses
+// the Windows x64 JNI already shipped in androidx.sqlite:sqlite-bundled.
+val windowsX64Only = providers.gradleProperty("windowsX64Only").isPresent
+if (windowsX64Only) {
+    require(System.getProperty("os.name").startsWith("Windows") &&
+            System.getProperty("os.arch") in setOf("amd64", "x86_64")) {
+        "-PwindowsX64Only requires a Windows x64 build host"
+    }
+}
+if (providers.gradleProperty("release").isPresent && !windowsX64Only) {
     val libs = sqliteNatives.map { dir ->
         listOf("windows_arm64/sqliteJni.dll", "osx_x64/libsqliteJni.dylib")
             .map { dir.file("natives/$it").asFile }
